@@ -48,3 +48,9 @@ func GenerateToken(userId int64, username string, email string) (result models.G
 
 	return result, nil
 }
+
+func CompareHashAndPassword(hashedPwd string, plainPwd string) (result bool) {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(plainPwd))
+
+	return err == nil
+}

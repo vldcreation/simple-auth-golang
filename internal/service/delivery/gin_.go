@@ -12,6 +12,7 @@ type GinObject struct {
 
 type features struct {
 	feature.SetupUser
+	feature.AccountLogin
 }
 
 func NewGinHandler(ctx context.Context, f features) {

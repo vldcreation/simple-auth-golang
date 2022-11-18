@@ -6,6 +6,7 @@ import (
 	"github.com/vldcreation/simple-auth-golang/internal/constants"
 	"github.com/vldcreation/simple-auth-golang/internal/feature"
 	setup_user "github.com/vldcreation/simple-auth-golang/internal/feature/account_creation"
+	account_login "github.com/vldcreation/simple-auth-golang/internal/feature/account_login"
 	"github.com/vldcreation/simple-auth-golang/internal/service/delivery"
 )
 
@@ -19,11 +20,20 @@ func (ox *App) initService(ctx context.Context) error {
 		},
 	)
 
+	featureAccountLogin := account_login.New(
+		account_login.Configuration{},
+		account_login.Dependency{
+			Postgresql: constants.DB,
+		},
+	)
+
 	delivery.NewGinHandler(ctx,
 		struct {
 			feature.SetupUser
+			feature.AccountLogin
 		}{
 			featureSetupUser,
+			featureAccountLogin,
 		})
 
 	return nil

@@ -40,3 +40,33 @@ type UserResponse struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
+
+type EmailField string
+
+func (x EmailField) Coallesce(def string) string {
+	if x == "" {
+		return string(def)
+	}
+	return string(x)
+}
+
+// UserLoginWithEmailOrUsername
+//
+// ----------------------------------------------------------------------------.
+type AccountLogin interface {
+	AccountLogin(
+		/*req*/ ctx context.Context, request AccountLoginRequest) (
+		/*res*/ response AccountLoginResponse, htppcode int, err error,
+	)
+}
+
+type AccountLoginRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type AccountLoginResponse struct {
+	User  UserResponse                 `json:"user"`
+	Token models.GenerateTokenResponse `json:"token"`
+}

@@ -14,4 +14,6 @@ var (
 	GetUserByID string
 	//go:embed edufund.users--get_user_by_email_or_username.select.sql
 	GetUserByEmailOrUsername string
+	//go:embed users.users--login_with_email.select.sql
+	UserLoginWithEmailOrUsername string
 )
