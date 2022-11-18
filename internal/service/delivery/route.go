@@ -20,6 +20,7 @@ func (ox *GinObject) InitRoutes(context context.Context) {
 	})
 
 	router.POST("/user/account-creation", SetupUser(context, ox.features.SetupUser))
+	router.POST("/user/account-login", AccountLogin(context, ox.features.AccountLogin))
 
 	router.Run(env.Get(constants.AppHost) + ":" + env.Get(constants.AppPort))
 }

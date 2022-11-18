@@ -89,3 +89,35 @@ func (x *postgresql) GetUserByEmailOrUsername(
 
 	return response, err
 }
+
+func (x *postgresql) UserLoginWithEmailOrUsername(
+	/*req*/ ctx context.Context, request UserLoginWithEmailOrUsernameRequest) (
+	/*res*/ response UserLoginWithEmailOrUsernameResponse, err error,
+) {
+	query := postgresql_query.UserLoginWithEmailOrUsername
+	args := entity.List{
+		request.Username,
+		request.Email,
+	}
+
+	row := func(i int) entity.List {
+		if i > (0) {
+			return nil
+		}
+
+		return entity.List{
+			&response.ID,
+			&response.Fullname,
+			&response.Username,
+			&response.Email,
+			&response.Password,
+		}
+	}
+
+	err = new(SQL).BoxQuery(x.tc.QueryContext(ctx, query, args...)).Scan(row)
+	if err != nil {
+		return response, err
+	}
+
+	return response, err
+}

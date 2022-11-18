@@ -56,3 +56,26 @@ type GetUserByEmailOrUsernameResponse struct {
 	Username string
 	Email    string
 }
+
+// CheckEmailUser
+//
+// ----------------------------------------------------------------------------.
+type UserLoginWithEmailOrUsername interface {
+	UserLoginWithEmailOrUsername(
+		/*req*/ ctx context.Context, request UserLoginWithEmailOrUsernameRequest) (
+		/*res*/ response UserLoginWithEmailOrUsernameResponse, err error,
+	)
+}
+
+type UserLoginWithEmailOrUsernameRequest struct {
+	Username string
+	Email    string
+}
+
+type UserLoginWithEmailOrUsernameResponse struct {
+	ID       int64
+	Fullname string
+	Username string
+	Email    string
+	Password string
+}
