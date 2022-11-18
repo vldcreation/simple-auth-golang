@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"log"
 
 	"github.com/vldcreation/simple-auth-golang/internal/models"
 	"github.com/vldcreation/simple-auth-golang/internal/repository"
@@ -33,7 +34,7 @@ func RegistrationUsecase(ctx context.Context, newPG repository.PostgreSQL, form 
 		return resp, err
 	}
 
-	auth, err := uc_utils.GenerateToken(user.ID, user.Username, user.Email)
+	auth, err := uc_utils.GenerateToken(user.ID, user.Fullname, user.Username, user.Email)
 	if err != nil {
 		return resp, err
 	}
@@ -51,6 +52,16 @@ func RegistrationUsecase(ctx context.Context, newPG repository.PostgreSQL, form 
 }
 
 func LoginUsecase(ctx context.Context, newPG repository.PostgreSQL, form models.AuthRequest) (resp models.AuthResponse, err error) {
+	if form.Email == "" {
+		form.Email = form.Username
+	}
+
+	if form.Username == "" {
+		form.Username = form.Email
+	}
+
+	log.Printf("form: %+v", form)
+
 	value, err := newPG.GetUserByEmailOrUsername(ctx, repository.GetUserByEmailOrUsernameRequest{
 		Username: form.Username,
 		Email:    form.Email,
@@ -65,14 +76,15 @@ func LoginUsecase(ctx context.Context, newPG repository.PostgreSQL, form models.
 
 	// we was check existing account , so we don't need to check again
 	userLogin, _ := newPG.UserLoginWithEmailOrUsername(ctx, repository.UserLoginWithEmailOrUsernameRequest{
-		Email: form.Email,
+		Username: form.Username,
+		Email:    form.Email,
 	})
 
 	if isValid := uc_utils.CompareHashAndPassword(userLogin.Password, form.Password); !isValid {
 		return resp, errors.New(sconstants.UserNotExist)
 	}
 
-	auth, err := uc_utils.GenerateToken(userLogin.ID, userLogin.Username, userLogin.Email)
+	auth, err := uc_utils.GenerateToken(userLogin.ID, userLogin.Fullname, userLogin.Username, userLogin.Email)
 	if err != nil {
 		return resp, err
 	}

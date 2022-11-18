@@ -9,6 +9,7 @@ import (
 const (
 	MinimumFullname = 2
 	MinimumPassword = 12
+	MinimumUsername = 6
 )
 
 // SetupUser

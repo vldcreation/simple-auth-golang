@@ -34,6 +34,7 @@ type feat struct {
 
 var (
 	ErrMinimumFullname = errors.New("Name should be 2 characters or more")
+	ErrMinimumUsername = errors.New("Username should be 6 characters or more")
 	ErrMinimumPassword = errors.New("Password should be at least 12 characters long")
 	ErrInvalidEmail    = errors.New("Please provide a valid email address")
 	ErrConfirmPassword = errors.New("Confirmation password does not match")
@@ -50,6 +51,10 @@ func (x *feat) SetupUser(
 
 	if len(request.Fullname) < feature.MinimumFullname {
 		return response, http.StatusBadRequest, ErrMinimumFullname
+	}
+
+	if len(request.Username) < feature.MinimumUsername {
+		return response, http.StatusBadRequest, ErrMinimumUsername
 	}
 
 	serverHostName := env.Get(constants.ServerHostName)
