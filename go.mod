@@ -3,6 +3,8 @@ module github.com/vldcreation/simple-auth-golang
 go 1.17
 
 require (
+	github.com/AfterShip/email-verifier v1.3.1 // indirect
+	github.com/badoux/checkmail v1.2.1 // indirect
 	github.com/gearintellix/serr v1.1.6 // indirect
 	github.com/gearintellix/u2 v1.0.9 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -12,6 +14,8 @@ require (
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
+	github.com/hbollon/go-edlib v1.6.0 // indirect
 	github.com/jmoiron/sqlx v1.3.5 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -28,4 +32,5 @@ require (
 	golang.org/x/text v0.4.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	h12.io/socks v1.0.3 // indirect
 )
