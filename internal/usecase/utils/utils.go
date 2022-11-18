@@ -22,9 +22,10 @@ func EncryptPassword(pwd string) (result string, err error) {
 	return string(bt), nil
 }
 
-func GenerateToken(userId int64, username string, email string) (result models.GenerateTokenResponse, err error) {
+func GenerateToken(userId int64, fullname string, username string, email string) (result models.GenerateTokenResponse, err error) {
 	claims := models.JwtClaim{
 		UserId:   userId,
+		Fullname: fullname,
 		Username: username,
 		Email:    email,
 		StandardClaims: jwt.StandardClaims{
@@ -41,6 +42,7 @@ func GenerateToken(userId int64, username string, email string) (result models.G
 
 	result = models.GenerateTokenResponse{
 		UserId:      userId,
+		Fullname:    fullname,
 		Username:    username,
 		Email:       email,
 		AccessToken: signedToken,
