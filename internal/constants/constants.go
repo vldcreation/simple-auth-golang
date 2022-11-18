@@ -19,4 +19,7 @@ var (
 	DBName    = "DB_NAME"
 	DBSSLMode = "DB_SSL_MODE"
 	DBConnStr = "DB_CONN_STR"
+
+	ServerHostName    = "SERVER_HOST_NAME"
+	ServerMailAddress = "SERVER_MAIL_ADDRESS"
 )

@@ -32,6 +32,9 @@ func Run(ctx context.Context) {
 		"DB_PWD",
 		"DB_NAME",
 		"DB_SSL_MODE",
+		"SERVER_HOST_NAME",
+		"SERVER_MAIL_ADDRESS",
+		"JWT_SECRET_KEY",
 	}
 
 	app := new(App)
@@ -45,6 +48,12 @@ func Run(ctx context.Context) {
 
 	if err := app.initDB(ctx); err != nil {
 		log.Fatalln("app.initDB();\n", err)
+		<-time.After(time.Second * 5)
+		panic(err)
+	}
+
+	if err := app.initService(ctx); err != nil {
+		log.Fatalln("app.initService();")
 		<-time.After(time.Second * 5)
 		panic(err)
 	}
