@@ -2,16 +2,22 @@ package app
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/gearintellix/u2"
 	"github.com/jmoiron/sqlx"
 	"github.com/vldcreation/simple-auth-golang/internal/constants"
 	"github.com/vldcreation/simple-auth-golang/internal/entity"
+	"github.com/vldcreation/simple-auth-golang/internal/repository"
 	"github.com/vldcreation/simple-auth-golang/internal/utils/utstring"
 
 	_ "github.com/lib/pq"
 )
+
+func (ox *App) SetupOrTeardown(ctx context.Context) {
+
+}
 
 func (ox *App) initDB(ctx context.Context) (err error) {
 	env := entity.ENV()
@@ -39,6 +45,57 @@ func (ox *App) initDB(ctx context.Context) (err error) {
 	if err != nil {
 		return err
 	}
+
+	queries := []string{
+		`CREATE schema IF NOT EXISTS edufund;`,
+		`CREATE TABLE IF NOT EXISTS edufund.users (
+			id bigserial primary key,
+			fullname varchar(255) not null,
+			email varchar(100) not null,
+			username varchar(100) not null,
+			"password" varchar(255) not null,
+			created_by varchar(255) NOT NULL DEFAULT 'SYSTEM'::character varying,
+			created_at timestamptz NOT NULL DEFAULT now(),
+			modified_by varchar(255) NOT NULL DEFAULT 'SYSTEM'::character varying,
+			modified_at timestamptz NOT NULL DEFAULT now(),
+			deleted_by varchar(255) NULL,
+			deleted_at timestamptz NULL
+		);`,
+		`CREATE UNIQUE INDEX ON edufund.users(username);`,
+		`CREATE UNIQUE INDEX ON edufund.users(email);`,
+	}
+
+	var xsql = new(repository.SQL)
+
+	err = xsql.SetupOrTeardown(ctx, ox.DB,
+		queries[0])
+	if err != nil {
+		log.Printf("Error: %v", err)
+		panic(err)
+	}
+
+	err = xsql.SetupOrTeardown(ctx, ox.DB,
+		queries[1])
+	if err != nil {
+		log.Printf("Error: %v", err)
+		panic(err)
+	}
+
+	err = xsql.SetupOrTeardown(ctx, ox.DB,
+		queries[2])
+	if err != nil {
+		log.Printf("Error: %v", err)
+		panic(err)
+	}
+
+	err = xsql.SetupOrTeardown(ctx, ox.DB,
+		queries[3])
+	if err != nil {
+		log.Printf("Error: %v", err)
+		panic(err)
+	}
+
+	log.Default().Println("SetupDB Done")
 
 	ox.DB.SetConnMaxLifetime(time.Second * 14400)
 

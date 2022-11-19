@@ -6,7 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 
+	"github.com/uptrace/bun/driver/pgdriver"
 	"github.com/vldcreation/simple-auth-golang/internal/entity"
 )
 
@@ -59,6 +61,30 @@ type boxExec struct {
 	err       error
 }
 
+// WithDSN will open connection from the given dsn string with URL format, note
+// that any error when opening the database should result in a panic.
+func (SQL) WithDSN(dsn string) (conn *sql.DB) {
+	driverName := strings.Split(dsn+"://", "://")[0]
+	switch driverName {
+	case "postgres", "postgresql":
+		conn = sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+		if conn == nil {
+			panic("empty database")
+		}
+	default:
+		var err error
+
+		conn, err = sql.Open(driverName, dsn)
+		if err != nil {
+			panic(err)
+		} else if conn == nil {
+			panic("empty database")
+		}
+	}
+
+	return conn
+}
+
 func (x boxExec) Scan(rowsAffected *int, lastInsertID *int) (err error) {
 	err = x.err
 	if err != nil {
@@ -86,6 +112,16 @@ func (x boxExec) Scan(rowsAffected *int, lastInsertID *int) (err error) {
 	}
 
 	return err
+}
+
+func (SQL) SetupOrTeardown(ctx context.Context, conn ExecContext, queries ...string) error {
+	for _, q := range queries {
+		if _, err := conn.ExecContext(ctx, q); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Scan the result of ExecContext that usually return numbers of rowsAffected
