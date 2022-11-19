@@ -1,0 +1,50 @@
+version: '3.9'
+services:
+  edufund-svc:
+    container_name: edufund_svc
+    environment:
+      - APP_VERSION="v1.0.0"
+      - APP_ENV=local
+      - APP_KEY=pretest-edufund
+      - APP_NAME=Pretest Edufund
+      - APP_HOST=127.0.0.1
+      - APP_PORT=9091
+      - SERVER_HOST_NAME="smtp.gmail.com"
+      - SERVER_MAIL_ADDRESS="infodcc.21@gmail.com"
+      - JWT_SECRET_KEY="---RAHASIABRO!!!!"
+      - DB_ENGINE
+      - DB_SSL_MODE
+      - DB_HOST
+      - DB_NAME
+      - DB_PORT
+      - DB_PWD
+      - DB_USER
+    tty: true
+    build: .
+    ports:
+      - 8000:8080
+    restart: on-failure
+    volumes:
+      - .:/app
+    depends_on:
+      - postgresdb
+    networks:
+      - learning
+
+  postgresdb:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PWD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+    ports:
+      - '5432:5432'
+    networks:
+      - learning
+
+# Networks to be created to facilitate communication between containers
+networks:
+  learning:
+    driver: bridge
