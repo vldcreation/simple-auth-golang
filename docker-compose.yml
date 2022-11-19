@@ -9,9 +9,9 @@ services:
       - APP_NAME=Pretest Edufund
       - APP_HOST=localhost
       - APP_PORT=9091
-      - SERVER_HOST_NAME="smtp.gmail.com"
-      - SERVER_MAIL_ADDRESS="infodcc.21@gmail.com"
-      - JWT_SECRET_KEY="---RAHASIABRO!!!!"
+      - SERVER_HOST_NAME
+      - SERVER_MAIL_ADDRESS
+      - JWT_SECRET_KEY
       - DB_ENGINE
       - DB_SSL_MODE
       - DB_HOST

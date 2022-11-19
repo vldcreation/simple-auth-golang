@@ -32,7 +32,7 @@ func main() {
 	queries := []string{
 		`drop schema if exists edufund;`,
 		`create schema IF NOT EXISTS edufund;`,
-		`CREATE TABLE IF NOT EXISTS users (
+		`CREATE TABLE IF NOT EXISTS edufund.users (
 			id bigserial primary key,
 			fullname varchar(255) not null,
 			email varchar(100) not null,

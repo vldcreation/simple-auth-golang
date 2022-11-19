@@ -17,14 +17,17 @@ func (ox *GinObject) InitRoutes(context context.Context) {
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	router.Use(cors.New(config))
-	router.GET("/", func(c *gin.Context) {
+
+	v1 := router.Group("/api/v1")
+
+	v1.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Hello World!",
 		})
 	})
 
-	router.POST("/user/account-creation", SetupUser(context, ox.features.SetupUser))
-	router.POST("/user/account-login", AccountLogin(context, ox.features.AccountLogin))
+	v1.POST("/user/account-creation", SetupUser(context, ox.features.SetupUser))
+	v1.POST("/user/account-login", AccountLogin(context, ox.features.AccountLogin))
 
 	router.Run(":" + env.Get(constants.AppPort))
 }
