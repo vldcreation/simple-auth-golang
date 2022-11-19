@@ -19,9 +19,9 @@ func RegistrationUsecase(ctx context.Context, newPG repository.PostgreSQL, form 
 
 	value, err := newPG.AddNewUser(ctx, repository.AddNewUserRequest{
 		Fullname: form.Fullname,
+		Username: form.Username,
 		Email:    form.Email,
 		Password: password,
-		Username: form.Username,
 	})
 	if err != nil {
 		return resp, err
@@ -70,17 +70,26 @@ func LoginUsecase(ctx context.Context, newPG repository.PostgreSQL, form models.
 		return resp, err
 	}
 
+	log.Printf("value: %+v", value)
+
 	if value.ID == 0 {
+		log.Printf("value.ID: %+v", form)
+
 		return resp, errors.New(sconstants.UserNotExist)
 	}
 
 	// we was check existing account , so we don't need to check again
-	userLogin, _ := newPG.UserLoginWithEmailOrUsername(ctx, repository.UserLoginWithEmailOrUsernameRequest{
+	userLogin, err := newPG.UserLoginWithEmailOrUsername(ctx, repository.UserLoginWithEmailOrUsernameRequest{
 		Username: form.Username,
 		Email:    form.Email,
 	})
+	if err != nil {
+		return resp, err
+	}
 
 	if isValid := uc_utils.CompareHashAndPassword(userLogin.Password, form.Password); !isValid {
+		log.Printf("UserLogin :%v", userLogin)
+
 		return resp, errors.New(sconstants.UserNotExist)
 	}
 
