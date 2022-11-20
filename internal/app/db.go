@@ -61,8 +61,24 @@ func (ox *App) initDB(ctx context.Context) (err error) {
 			deleted_by varchar(255) NULL,
 			deleted_at timestamptz NULL
 		);`,
-		`CREATE UNIQUE INDEX ON edufund.users(username);`,
-		`CREATE UNIQUE INDEX ON edufund.users(email);`,
+		`DO $$
+		BEGIN
+			IF (SELECT to_regclass('edufund.users') IS NOT null) 
+			THEN 
+				CREATE INDEX IF NOT EXISTS users_username_idx
+				ON edufund.users(username)
+				TABLESPACE pg_default;
+			END IF;
+		END $$;`,
+		`DO $$
+		BEGIN
+			IF (SELECT to_regclass('edufund.users') IS NOT null) 
+			THEN 
+				CREATE INDEX IF NOT EXISTS users_email_idx
+				ON edufund.users(email)
+				TABLESPACE pg_default;
+			END IF;
+		END $$;`,
 	}
 
 	var xsql = new(repository.SQL)
